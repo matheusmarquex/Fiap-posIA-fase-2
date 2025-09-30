@@ -1,0 +1,8 @@
+openai>=1.35.0
+numpy
+pandas
+matplotlib
+folium
+deap
+tqdm
+pygame
