@@ -2,9 +2,14 @@ from utils import load_locations, build_distance_matrix
 from ga import genetic_algorithm
 from visualize import Visualizer
 
+import os
+print("Diretório atual:", os.getcwd())
 
 def main():
-    locations = load_locations("data/sample_locations.csv")
+    csv_path = os.path.normpath(
+        os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'data', 'sample_locations.csv'))
+    locations = load_locations(csv_path)
+
     distance_matrix = build_distance_matrix(locations)
 
     visualizer = Visualizer(locations)
