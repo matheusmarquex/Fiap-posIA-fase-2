@@ -1,7 +1,6 @@
 import pygame
 import sys
 
-
 class Visualizer:
     def __init__(self, locations, width=800, height=600):
         pygame.init()
@@ -11,8 +10,8 @@ class Visualizer:
         self.locations = locations
 
         # normaliza coordenadas para caber na tela
-        lats = [lat for _, lat, lon in locations]
-        lons = [lon for _, lat, lon in locations]
+        lats = [lat for _, lat, lon, _, _ in locations]
+        lons = [lon for _, lat, lon, _, _ in locations]
         self.min_lat, self.max_lat = min(lats), max(lats)
         self.min_lon, self.max_lon = min(lons), max(lons)
 
@@ -28,7 +27,7 @@ class Visualizer:
     def draw(self, generation, route, distance):
         self.screen.fill((30, 30, 30))
 
-        # eventos (para poder fechar janela)
+        # eventos (para poder fechar a janela)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -36,11 +35,14 @@ class Visualizer:
 
         # desenha pontos
         coords = []
-        for name, lat, lon in self.locations:
+        for name, lat, lon, produto, prioridade in self.locations:
             x, y = self.transform(lat, lon)
             coords.append((x, y))
-            color = (200, 50, 50) if name.lower().startswith("hospital") else (50, 200, 50)
-            pygame.draw.circle(self.screen, color, (x, y), 8)
+            if name.lower().startswith("hospital"):
+                pygame.draw.circle(self.screen, (255, 255, 0), (x, y), 10)
+            else:
+                color = (0, 200, 0) if prioridade == "Baixa" else (200, 50, 50)
+                pygame.draw.circle(self.screen, color, (x, y), 6)
 
         # desenha rota
         if route:
@@ -57,4 +59,4 @@ class Visualizer:
         self.screen.blit(text2, (10, 40))
 
         pygame.display.flip()
-        self.clock.tick(30)  # até 30 fps
+        self.clock.tick(30)
