@@ -1,11 +1,11 @@
-id,lat,lon
-Hospital Central,-23.561684,-46.655981
-UnidadeP1,-23.551551,-46.684067
-UnidadeP2,-23.571464,-46.655475
-UnidadeP3,-23.586632,-46.683334
-UnidadeP4,-23.533477,-46.677602
-UnidadeP5,-23.536221,-46.680799
-UnidadeP6,-23.549259,-46.671281
-UnidadeP7,-23.553627,-46.636647
-UnidadeP8,-23.550515,-46.654869
-UnidadeP9,-23.590060,-46.674936
+cliente,lat,lon,produto,prioridade
+Hospital Central,-23.561684,-46.655981,N/A,N/A
+Marcos_1,-23.620509,-46.748025,Vacina D,Alta
+Kleber_2,-23.495592,-46.506035,Remédio B,Alta
+Tiago_3,-23.236664,-46.775853,Remédio A,Alta
+Natalia_4,-23.899018,-46.817431,Remédio B,Baixa
+Ana_5,-23.869009,-46.557051,Vacina D,Alta
+Natalia_6,-23.501158,-46.952950,Insumo C,Alta
+Ana_7,-23.620029,-46.578091,Remédio B,Baixa
+Natalia_8,-23.316884,-46.366908,Insumo C,Baixa
+Ana_9,-23.274495,-46.550617,Remédio B,Alta
