@@ -6,3 +6,4 @@ folium
 deap
 tqdm
 pygame
+openai>=1.40.0

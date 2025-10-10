@@ -36,3 +36,17 @@ def build_distance_matrix(locations):
             if i != j:
                 matrix[i][j] = euclidean_distance(coords[i], coords[j])
     return matrix
+
+
+def summarize_route(best_route_indices, locs):
+    high = low = 0
+    for idx in best_route_indices:
+        nome, lat, lon, produto, prioridade = locs[idx]
+        if nome.lower().startswith("hospital"):
+            continue
+        if str(prioridade).strip().lower() == "alta":
+            high += 1
+        else:
+            low += 1
+    stops = max(0, len(best_route_indices) - 2)
+    return stops, high, low
