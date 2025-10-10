@@ -19,8 +19,8 @@ class Visualizer:
         self._last_overlay = None  # texto opcional
 
     def transform(self, lat, lon):
-        x = int((lon - self.min_lon) / (self.max_lon - self.min_lon) * (self.width - 100) + 50)
-        y = int((lat - self.min_lat) / (self.max_lat - self.min_lat) * (self.height - 100) + 50)
+        x = int((lon - self.min_lon) / (self.max_lon - self.min_lon + 1e-9) * (self.width - 100) + 50)
+        y = int((lat - self.min_lat) / (self.max_lat - self.min_lat + 1e-9) * (self.height - 100) + 50)
         return (x, y)
 
     def _draw_overlay(self, text):
@@ -62,7 +62,7 @@ class Visualizer:
 
         font = pygame.font.SysFont("Arial", 20)
         text1 = font.render(f"Geração: {generation}", True, (255, 255, 255))
-        text2 = font.render(f"Distância: {distance:.2f}", True, (255, 255, 255))
+        text2 = font.render(f"Distância (custo): {distance:.2f}", True, (255, 255, 255))
         self.screen.blit(text1, (10, 10))
         self.screen.blit(text2, (10, 40))
 
@@ -92,8 +92,6 @@ class Visualizer:
         if self._last_overlay != message:
             # força re-render do overlay
             self._last_overlay = message
-        # não temos o último frame aqui, então apenas preenche fundo escuro
-        # para evitar "ghosting" — simples e funcional
         pygame.display.get_surface().fill((30, 30, 30))
         # escreve somente o overlay grande no centro da tela
         font = pygame.font.SysFont("Arial", 24)

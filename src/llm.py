@@ -1,4 +1,3 @@
-# src/llm.py
 import os
 import textwrap
 from typing import List, Tuple, Dict, Any
@@ -44,7 +43,7 @@ def make_llm():
 
 
 # ============
-#  Prompts
+#  Helpers/Prompts
 # ============
 def _fmt_stop_list(route_indices: List[int], locs: List[Tuple[str, float, float, str, str]]) -> str:
     lines = []
@@ -64,11 +63,25 @@ def prompt_driver_instructions(
 ) -> str:
     stops = _fmt_stop_list(route_indices, locs)
     rules = "\n".join([
-        f"- Capacidade máx.: {constraints.get('max_per_truck', 'N/A')} entregas",
+        f"- Capacidade máx. de paradas: {constraints.get('max_per_truck', 'N/A')}",
+        f"- Capacidade de carga (soma das demandas): {constraints.get('max_load_per_truck', 'N/A')}",
         f"- Autonomia (km estimados): {constraints.get('max_distance_km', 'N/A')}",
         f"- Prioridades: Alta deve ser atendida antes de Baixa sempre que possível.",
         "- Retornar ao hospital ao final da rota.",
     ])
+
+    # Alertas (se houverem)
+    alerts = []
+    if constraints.get("route_load") is not None and constraints.get("max_load_per_truck") is not None:
+        rl = constraints["route_load"]; ml = constraints["max_load_per_truck"]
+        if rl > ml:
+            alerts.append(f"⚠️ Carga estimada ({rl:.2f}) excede capacidade ({ml:.2f}).")
+    if constraints.get("route_distance_real") is not None and constraints.get("max_distance_km") is not None:
+        rd = constraints["route_distance_real"]; md = constraints["max_distance_km"]
+        if rd > md:
+            alerts.append(f"⚠️ Distância da rota ({rd:.2f} km) excede autonomia ({md:.2f} km).")
+
+    alerts_text = "\n".join(alerts) if alerts else "Sem alertas."
 
     return f"""
 Gere instruções claras para o MOTORISTA do Caminhão {truck_id}.
@@ -76,6 +89,9 @@ Contexto: entrega de medicamentos/insumos hospitalares (alto rigor e segurança)
 
 Regras operacionais:
 {rules}
+
+Alertas de planejamento:
+{alerts_text}
 
 Distância total estimada (unidade relativa do GA): {distance:.2f}
 
@@ -121,7 +137,7 @@ Gere um RELATÓRIO DIÁRIO das rotas de entrega hospitalar, em PT-BR, com:
 - Métricas por caminhão
 - Eficiência (ex.: paradas/rota, % alta prioridade atendida)
 - Gargalos e recomendações de melhoria para o próximo dia
-- Observações operacionais
+- Observações operacionais (inclua alertas de autonomia/capacidade quando existirem)
 
 Dados consolidados de hoje:
 {header}
@@ -133,7 +149,8 @@ Totais:
 - Distância total (unidade GA): {total_dist:.2f}
 
 Restrições/Parâmetros:
-- Capacidade por veículo: {constraints.get('max_per_truck')}
+- Capacidade por veículo (paradas): {constraints.get('max_per_truck')}
+- Capacidade de carga (soma das demandas): {constraints.get('max_load_per_truck', 'N/A')}
 - Autonomia estimada (km): {constraints.get('max_distance_km', 'N/A')}
 - Veículos disponíveis: {constraints.get('num_trucks')}
 
